@@ -5,7 +5,16 @@
 		<constraint xsi:type="primary" referenceId="PRIMARY">
 			<column name="shippingrestriction_id"/>
 		</constraint>
-		<column name="zip_code" nullable="false" xsi:type="text" comment="zip_code"/>
-		<column name="carrier_code" nullable="false" xsi:type="text" comment="carrier_code"/>
+		<column name="zip_code" nullable="false" xsi:type="varchar" length="10" comment="zip_code"/>
+		<column name="carrier_code" nullable="false" xsi:type="varchar" length="255" comment="carrier_code"/>
+
+		<index referenceId="ZIP_CODE_INDEX"  indexType="btree">
+			<column name="zip_code"/>
+		</index>
+
+		<index referenceId="CARRIER_CODE_INDEX" indexType="btree">
+			<column name="carrier_code"/>
+		</index>
+
 	</table>
 </schema>
