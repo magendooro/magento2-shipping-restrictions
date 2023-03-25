@@ -1,0 +1,26 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+	<preference for="Magendoo\ShippingRestrictions\Api\ShippingRestrictionRepositoryInterface" type="Magendoo\ShippingRestrictions\Model\ShippingRestrictionRepository"/>
+	<preference for="Magendoo\ShippingRestrictions\Api\Data\ShippingRestrictionInterface" type="Magendoo\ShippingRestrictions\Model\ShippingRestriction"/>
+	<preference for="Magendoo\ShippingRestrictions\Api\Data\ShippingRestrictionSearchResultsInterface" type="Magento\Framework\Api\SearchResults"/>
+	<virtualType name="Magendoo\ShippingRestrictions\Model\ResourceModel\ShippingRestriction\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+		<arguments>
+			<argument name="mainTable" xsi:type="string">magendoo_shippingrestrictions_shippingrestriction</argument>
+			<argument name="resourceModel" xsi:type="string">Magendoo\ShippingRestrictions\Model\ResourceModel\ShippingRestriction\Collection</argument>
+		</arguments>
+	</virtualType>
+	<type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+		<arguments>
+			<argument name="collections" xsi:type="array">
+				<item name="magendoo_shippingrestrictions_shippingrestriction_listing_data_source" xsi:type="string">Magendoo\ShippingRestrictions\Model\ResourceModel\ShippingRestriction\Grid\Collection</item>
+			</argument>
+		</arguments>
+	</type>
+
+	 <type name="JTI\Shipping\Model\Carrier\StandardShipping">
+        <plugin name="magendoo_shippingrestrictions_zip_code_restriction"
+                type="Magendoo\ShippingRestrictions\Plugin\ZipCodeRestrictionPlugin"
+                sortOrder="1"
+                disabled="false"/>
+    </type>
+</config>

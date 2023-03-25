@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Webapi:etc/webapi.xsd">
+	<route url="/V1/magendoo-shippingrestrictions/shippingrestriction" method="POST">
+		<service class="Magendoo\ShippingRestrictions\Api\ShippingRestrictionRepositoryInterface" method="save"/>
+		<resources>
+			<resource ref="Magendoo_ShippingRestrictions::ShippingRestriction_save"/>
+		</resources>
+	</route>
+	<route url="/V1/magendoo-shippingrestrictions/shippingrestriction/search" method="GET">
+		<service class="Magendoo\ShippingRestrictions\Api\ShippingRestrictionRepositoryInterface" method="getList"/>
+		<resources>
+			<resource ref="Magendoo_ShippingRestrictions::ShippingRestriction_view"/>
+		</resources>
+	</route>
+	<route url="/V1/magendoo-shippingrestrictions/shippingrestriction/:shippingrestrictionId" method="GET">
+		<service class="Magendoo\ShippingRestrictions\Api\ShippingRestrictionRepositoryInterface" method="get"/>
+		<resources>
+			<resource ref="Magendoo_ShippingRestrictions::ShippingRestriction_view"/>
+		</resources>
+	</route>
+	<route url="/V1/magendoo-shippingrestrictions/shippingrestriction/:shippingrestrictionId" method="PUT">
+		<service class="Magendoo\ShippingRestrictions\Api\ShippingRestrictionRepositoryInterface" method="save"/>
+		<resources>
+			<resource ref="Magendoo_ShippingRestrictions::ShippingRestriction_update"/>
+		</resources>
+	</route>
+	<route url="/V1/magendoo-shippingrestrictions/shippingrestriction/:shippingrestrictionId" method="DELETE">
+		<service class="Magendoo\ShippingRestrictions\Api\ShippingRestrictionRepositoryInterface" method="deleteById"/>
+		<resources>
+			<resource ref="Magendoo_ShippingRestrictions::ShippingRestriction_delete"/>
+		</resources>
+	</route>
+</routes>

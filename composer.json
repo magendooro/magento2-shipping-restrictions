@@ -1,0 +1,22 @@
+{
+    "name": "magendoo/module-shippingrestrictions",
+    "description": "Shipping Restrictions module",
+    "type": "magento2-module",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Florinel Chis",
+            "email": "florinel.chis@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Magendoo\\ShippingRestrictions\\": ""
+        }
+    }
+}

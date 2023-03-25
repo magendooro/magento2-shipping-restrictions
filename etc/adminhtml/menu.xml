@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+	<menu>
+		<add id="Magendoo::top_level" title="Magendoo" module="Magendoo_ShippingRestrictions" sortOrder="9999" resource="Magento_Backend::content"/>
+		<add id="Magendoo_ShippingRestrictions::magendoo_shippingrestrictions_shippingrestriction" title="ShippingRestriction" module="Magendoo_ShippingRestrictions" sortOrder="9999" resource="Magento_Backend::content" parent="Magendoo::top_level" action="magendoo_shippingrestrictions/shippingrestriction/index"/>
+	</menu>
+</config>
