@@ -23,11 +23,11 @@ class DataProvider extends AbstractDataProvider
      * @var array
      */
     protected $loadedData;
+
     /**
      * @inheritDoc
      */
     protected $collection;
-
 
     /**
      * @param string $name
@@ -65,14 +65,14 @@ class DataProvider extends AbstractDataProvider
             $this->loadedData[$model->getId()] = $model->getData();
         }
         $data = $this->dataPersistor->get('magendoo_shippingrestrictions_shippingrestriction');
-        
+
         if (!empty($data)) {
             $model = $this->collection->getNewEmptyItem();
             $model->setData($data);
             $this->loadedData[$model->getId()] = $model->getData();
             $this->dataPersistor->clear('magendoo_shippingrestrictions_shippingrestriction');
         }
-        
+
         return $this->loadedData;
     }
 }
