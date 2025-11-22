@@ -1,57 +1,114 @@
 <?php
+/**
+ * Copyright © All rights reserved.
+ * See COPYING.txt for license details.
+ */
+declare(strict_types=1);
+
 namespace Magendoo\ShippingRestrictions\Plugin;
 
-use Magento\Quote\Model\Quote\Address\RateRequest;
+use Magendoo\ShippingRestrictions\Helper\Config;
 use Magendoo\ShippingRestrictions\Model\ResourceModel\ShippingRestriction\CollectionFactory as RestrictionsCollectionFactory;
+use Magento\Quote\Model\Quote\Address\RateRequest;
+use Magento\Quote\Model\Quote\Address\RateResult\Method;
 use Magento\Shipping\Model\Carrier\CarrierInterface;
+use Magento\Shipping\Model\Rate\Result;
+use Psr\Log\LoggerInterface;
 
+/**
+ * Plugin to restrict shipping methods based on zip code
+ */
 class ZipCodeRestrictionPlugin
 {
-    protected $restrictionsCollectionFactory;
-    
-    public function __construct(        
-        RestrictionsCollectionFactory $restrictionsCollectionFactory
-    ) {        
+    /**
+     * @var RestrictionsCollectionFactory
+     */
+    private RestrictionsCollectionFactory $restrictionsCollectionFactory;
+
+    /**
+     * @var Config
+     */
+    private Config $config;
+
+    /**
+     * @var LoggerInterface
+     */
+    private LoggerInterface $logger;
+
+    /**
+     * @param RestrictionsCollectionFactory $restrictionsCollectionFactory
+     * @param Config $config
+     * @param LoggerInterface $logger
+     */
+    public function __construct(
+        RestrictionsCollectionFactory $restrictionsCollectionFactory,
+        Config $config,
+        LoggerInterface $logger
+    ) {
         $this->restrictionsCollectionFactory = $restrictionsCollectionFactory;
+        $this->config = $config;
+        $this->logger = $logger;
     }
 
     /**
      * Check if the shipping method is available for the given address
      *
-     * @param \Magento\Shipping\Model\Carrier\AbstractCarrier $subject
-     * @param array $result
-     * @return array
+     * @param CarrierInterface $subject
+     * @param Result|bool $result
+     * @param RateRequest $request
+     * @return Result|bool
      */
     public function afterCollectRates(
         CarrierInterface $subject,
         $result,
         RateRequest $request
     ) {
-        /*
-        if (!$this->getConfigFlag('active')) {
-            return $result;
-        }*/
-        $restrictions = $this->restrictionsCollectionFactory->create()
-            ->addFieldToFilter('zip_code', $request->getDestPostcode())
-            ->addFieldToFilter('carrier_code', $subject->getCarrierCode());
-            \Magento\Framework\App\ObjectManager::getInstance()
-            ->get(\Psr\Log\LoggerInterface::class)->debug($restrictions->getSelect());
-
-        //if I found the zip code, it is fine, the method should be shown
-        if ($restrictions->count()) {
+        // Check if module is enabled
+        if (!$this->config->isEnabled()) {
             return $result;
         }
 
-        $rates = [];
+        // If result is false or not a Result object, return as is
+        if (!$result instanceof Result) {
+            return $result;
+        }
+
+        $destPostcode = $request->getDestPostcode();
+        $carrierCode = $subject->getCarrierCode();
+
+        // Query restrictions for this zip code and carrier
+        $restrictions = $this->restrictionsCollectionFactory->create()
+            ->addFieldToFilter('zip_code', $destPostcode)
+            ->addFieldToFilter('carrier_code', $carrierCode);
+
+        // If restriction found, the shipping method IS allowed for this zip code
+        if ($restrictions->count() > 0) {
+            $this->logger->debug('Shipping method allowed by restriction', [
+                'carrier' => $carrierCode,
+                'zip_code' => $destPostcode
+            ]);
+            return $result;
+        }
+
+        // No restriction found - remove this carrier's rates
+        $this->logger->debug('Shipping method restricted - no matching restriction found', [
+            'carrier' => $carrierCode,
+            'zip_code' => $destPostcode
+        ]);
+
+        $filteredRates = [];
         foreach ($result->getAllRates() as $rate) {
-            if ($rate->getCarrier() != $subject->getCarrierCode()) {
-                $rates[] = $rate;            
+            /** @var Method $rate */
+            if ($rate->getCarrier() !== $carrierCode) {
+                $filteredRates[] = $rate;
             }
         }
+
         $result->reset();
-        foreach ($rates as $rate) {
+        foreach ($filteredRates as $rate) {
             $result->append($rate);
         }
-        return $result;        
+
+        return $result;
     }
 }

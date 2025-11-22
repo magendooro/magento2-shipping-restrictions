@@ -1,4 +1,18 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-	<module name="Magendoo_ShippingRestrictions"/>
+    <module name="Magendoo_ShippingRestrictions">
+        <sequence>
+            <module name="Magento_Shipping"/>
+            <module name="Magento_Quote"/>
+            <module name="Magento_Backend"/>
+            <module name="Magento_Store"/>
+        </sequence>
+    </module>
 </config>
+

@@ -1,26 +1,114 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-	<preference for="Magendoo\ShippingRestrictions\Api\ShippingRestrictionRepositoryInterface" type="Magendoo\ShippingRestrictions\Model\ShippingRestrictionRepository"/>
-	<preference for="Magendoo\ShippingRestrictions\Api\Data\ShippingRestrictionInterface" type="Magendoo\ShippingRestrictions\Model\ShippingRestriction"/>
-	<preference for="Magendoo\ShippingRestrictions\Api\Data\ShippingRestrictionSearchResultsInterface" type="Magento\Framework\Api\SearchResults"/>
-	<virtualType name="Magendoo\ShippingRestrictions\Model\ResourceModel\ShippingRestriction\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
-		<arguments>
-			<argument name="mainTable" xsi:type="string">magendoo_shippingrestrictions_shippingrestriction</argument>
-			<argument name="resourceModel" xsi:type="string">Magendoo\ShippingRestrictions\Model\ResourceModel\ShippingRestriction\Collection</argument>
-		</arguments>
-	</virtualType>
-	<type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
-		<arguments>
-			<argument name="collections" xsi:type="array">
-				<item name="magendoo_shippingrestrictions_shippingrestriction_listing_data_source" xsi:type="string">Magendoo\ShippingRestrictions\Model\ResourceModel\ShippingRestriction\Grid\Collection</item>
-			</argument>
-		</arguments>
-	</type>
+    <!-- Service Contract Preferences -->
+    <preference for="Magendoo\ShippingRestrictions\Api\ShippingRestrictionRepositoryInterface" type="Magendoo\ShippingRestrictions\Model\ShippingRestrictionRepository"/>
+    <preference for="Magendoo\ShippingRestrictions\Api\Data\ShippingRestrictionInterface" type="Magendoo\ShippingRestrictions\Model\ShippingRestriction"/>
+    <preference for="Magendoo\ShippingRestrictions\Api\Data\ShippingRestrictionSearchResultsInterface" type="Magento\Framework\Api\SearchResults"/>
 
-	 <type name="JTI\Shipping\Model\Carrier\StandardShipping">
-        <plugin name="magendoo_shippingrestrictions_zip_code_restriction"
+    <!-- Virtual Logger Configuration -->
+    <virtualType name="Magendoo\ShippingRestrictions\Logger\Handler" type="Magento\Framework\Logger\Handler\Base">
+        <arguments>
+            <argument name="fileName" xsi:type="string">/var/log/shipping_restrictions.log</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Magendoo\ShippingRestrictions\Logger\Logger" type="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="name" xsi:type="string">shippingRestrictions</argument>
+            <argument name="handlers" xsi:type="array">
+                <item name="system" xsi:type="object">Magendoo\ShippingRestrictions\Logger\Handler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Inject Logger into Module Classes -->
+    <type name="Magendoo\ShippingRestrictions\Controller\Adminhtml\ShippingRestriction\Save">
+        <arguments>
+            <argument name="logger" xsi:type="object">Magendoo\ShippingRestrictions\Logger\Logger</argument>
+        </arguments>
+    </type>
+
+    <type name="Magendoo\ShippingRestrictions\Controller\Adminhtml\ShippingRestriction\Delete">
+        <arguments>
+            <argument name="logger" xsi:type="object">Magendoo\ShippingRestrictions\Logger\Logger</argument>
+        </arguments>
+    </type>
+
+    <type name="Magendoo\ShippingRestrictions\Controller\Adminhtml\ShippingRestriction\InlineEdit">
+        <arguments>
+            <argument name="logger" xsi:type="object">Magendoo\ShippingRestrictions\Logger\Logger</argument>
+        </arguments>
+    </type>
+
+    <type name="Magendoo\ShippingRestrictions\Controller\Adminhtml\ShippingRestriction\Edit">
+        <arguments>
+            <argument name="logger" xsi:type="object">Magendoo\ShippingRestrictions\Logger\Logger</argument>
+        </arguments>
+    </type>
+
+    <type name="Magendoo\ShippingRestrictions\Plugin\ZipCodeRestrictionPlugin">
+        <arguments>
+            <argument name="logger" xsi:type="object">Magendoo\ShippingRestrictions\Logger\Logger</argument>
+        </arguments>
+    </type>
+
+    <type name="Magendoo\ShippingRestrictions\Model\ShippingRestrictionRepository">
+        <arguments>
+            <argument name="logger" xsi:type="object">Magendoo\ShippingRestrictions\Logger\Logger</argument>
+        </arguments>
+    </type>
+
+    <!-- UI Grid Configuration -->
+    <virtualType name="Magendoo\ShippingRestrictions\Model\ResourceModel\ShippingRestriction\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">magendoo_shippingrestrictions_shippingrestriction</argument>
+            <argument name="resourceModel" xsi:type="string">Magendoo\ShippingRestrictions\Model\ResourceModel\ShippingRestriction\Collection</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="magendoo_shippingrestrictions_shippingrestriction_listing_data_source" xsi:type="string">Magendoo\ShippingRestrictions\Model\ResourceModel\ShippingRestriction\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- Plugin Configuration -->
+    <!-- Apply plugin to all standard Magento carriers -->
+    <type name="Magento\OfflineShipping\Model\Carrier\Flatrate">
+        <plugin name="magendoo_shippingrestrictions_zip_code_restriction_flatrate"
                 type="Magendoo\ShippingRestrictions\Plugin\ZipCodeRestrictionPlugin"
                 sortOrder="1"
                 disabled="false"/>
     </type>
+
+    <type name="Magento\OfflineShipping\Model\Carrier\Freeshipping">
+        <plugin name="magendoo_shippingrestrictions_zip_code_restriction_freeshipping"
+                type="Magendoo\ShippingRestrictions\Plugin\ZipCodeRestrictionPlugin"
+                sortOrder="1"
+                disabled="false"/>
+    </type>
+
+    <type name="Magento\OfflineShipping\Model\Carrier\Tablerate">
+        <plugin name="magendoo_shippingrestrictions_zip_code_restriction_tablerate"
+                type="Magendoo\ShippingRestrictions\Plugin\ZipCodeRestrictionPlugin"
+                sortOrder="1"
+                disabled="false"/>
+    </type>
+
+    <!-- Original custom carrier plugin (if JTI module is installed) -->
+    <!-- <type name="JTI\Shipping\Model\Carrier\StandardShipping">
+        <plugin name="magendoo_shippingrestrictions_zip_code_restriction_jti"
+                type="Magendoo\ShippingRestrictions\Plugin\ZipCodeRestrictionPlugin"
+                sortOrder="1"
+                disabled="false"/>
+    </type> -->
 </config>
+

@@ -7,56 +7,61 @@ declare(strict_types=1);
 
 namespace Magendoo\ShippingRestrictions\Api;
 
+use Magendoo\ShippingRestrictions\Api\Data\ShippingRestrictionInterface;
+use Magendoo\ShippingRestrictions\Api\Data\ShippingRestrictionSearchResultsInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
+use Magento\Framework\Exception\CouldNotDeleteException;
+use Magento\Framework\Exception\CouldNotSaveException;
+use Magento\Framework\Exception\NoSuchEntityException;
 
+/**
+ * Shipping Restriction Repository Interface
+ */
 interface ShippingRestrictionRepositoryInterface
 {
-
     /**
-     * Save ShippingRestriction
-     * @param \Magendoo\ShippingRestrictions\Api\Data\ShippingRestrictionInterface $shippingRestriction
-     * @return \Magendoo\ShippingRestrictions\Api\Data\ShippingRestrictionInterface
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * Save Shipping Restriction
+     *
+     * @param ShippingRestrictionInterface $shippingRestriction
+     * @return ShippingRestrictionInterface
+     * @throws CouldNotSaveException
      */
-    public function save(
-        \Magendoo\ShippingRestrictions\Api\Data\ShippingRestrictionInterface $shippingRestriction
-    );
+    public function save(ShippingRestrictionInterface $shippingRestriction): ShippingRestrictionInterface;
 
     /**
-     * Retrieve ShippingRestriction
-     * @param string $shippingrestrictionId
-     * @return \Magendoo\ShippingRestrictions\Api\Data\ShippingRestrictionInterface
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * Retrieve Shipping Restriction by ID
+     *
+     * @param int $shippingrestrictionId
+     * @return ShippingRestrictionInterface
+     * @throws NoSuchEntityException
      */
-    public function get($shippingrestrictionId);
+    public function get(int $shippingrestrictionId): ShippingRestrictionInterface;
 
     /**
-     * Retrieve ShippingRestriction matching the specified criteria.
-     * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
-     * @return \Magendoo\ShippingRestrictions\Api\Data\ShippingRestrictionSearchResultsInterface
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * Retrieve Shipping Restrictions matching the specified criteria
+     *
+     * @param SearchCriteriaInterface $searchCriteria
+     * @return ShippingRestrictionSearchResultsInterface
      */
-    public function getList(
-        \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
-    );
+    public function getList(SearchCriteriaInterface $searchCriteria): ShippingRestrictionSearchResultsInterface;
 
     /**
-     * Delete ShippingRestriction
-     * @param \Magendoo\ShippingRestrictions\Api\Data\ShippingRestrictionInterface $shippingRestriction
+     * Delete Shipping Restriction
+     *
+     * @param ShippingRestrictionInterface $shippingRestriction
      * @return bool true on success
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws CouldNotDeleteException
      */
-    public function delete(
-        \Magendoo\ShippingRestrictions\Api\Data\ShippingRestrictionInterface $shippingRestriction
-    );
+    public function delete(ShippingRestrictionInterface $shippingRestriction): bool;
 
     /**
-     * Delete ShippingRestriction by ID
-     * @param string $shippingrestrictionId
+     * Delete Shipping Restriction by ID
+     *
+     * @param int $shippingrestrictionId
      * @return bool true on success
-     * @throws \Magento\Framework\Exception\NoSuchEntityException
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws NoSuchEntityException
+     * @throws CouldNotDeleteException
      */
-    public function deleteById($shippingrestrictionId);
+    public function deleteById(int $shippingrestrictionId): bool;
 }
 

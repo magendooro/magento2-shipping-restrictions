@@ -1,20 +1,33 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
 <schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
-	<table name="magendoo_shippingrestrictions_shippingrestriction" resource="default" engine="innodb" comment="magendoo_shippingrestrictions_shippingrestriction Table">
-		<column xsi:type="int" name="shippingrestriction_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Entity Id"/>
-		<constraint xsi:type="primary" referenceId="PRIMARY">
-			<column name="shippingrestriction_id"/>
-		</constraint>
-		<column name="zip_code" nullable="false" xsi:type="varchar" length="10" comment="zip_code"/>
-		<column name="carrier_code" nullable="false" xsi:type="varchar" length="255" comment="carrier_code"/>
+    <table name="magendoo_shippingrestrictions_shippingrestriction" resource="default" engine="innodb" comment="Shipping Restrictions Table">
+        <column xsi:type="int" name="shippingrestriction_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Entity ID"/>
+        <column xsi:type="varchar" name="zip_code" nullable="false" length="10" comment="Zip Code"/>
+        <column xsi:type="varchar" name="carrier_code" nullable="false" length="255" comment="Carrier Code"/>
 
-		<index referenceId="ZIP_CODE_INDEX"  indexType="btree">
-			<column name="zip_code"/>
-		</index>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="shippingrestriction_id"/>
+        </constraint>
 
-		<index referenceId="CARRIER_CODE_INDEX" indexType="btree">
-			<column name="carrier_code"/>
-		</index>
+        <index referenceId="ZIP_CODE_INDEX" indexType="btree">
+            <column name="zip_code"/>
+        </index>
 
-	</table>
+        <index referenceId="CARRIER_CODE_INDEX" indexType="btree">
+            <column name="carrier_code"/>
+        </index>
+
+        <!-- Composite index for improved query performance -->
+        <index referenceId="ZIP_CODE_CARRIER_CODE_INDEX" indexType="btree">
+            <column name="zip_code"/>
+            <column name="carrier_code"/>
+        </index>
+    </table>
 </schema>
+

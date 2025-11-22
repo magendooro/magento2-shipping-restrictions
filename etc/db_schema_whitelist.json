@@ -1,0 +1,17 @@
+{
+    "magendoo_shippingrestrictions_shippingrestriction": {
+        "column": {
+            "shippingrestriction_id": true,
+            "zip_code": true,
+            "carrier_code": true
+        },
+        "index": {
+            "ZIP_CODE_INDEX": true,
+            "CARRIER_CODE_INDEX": true,
+            "ZIP_CODE_CARRIER_CODE_INDEX": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    }
+}
